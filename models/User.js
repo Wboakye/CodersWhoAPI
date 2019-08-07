@@ -31,6 +31,18 @@ const userSchema = new mongoose.Schema({
         min: 6,
         max: 1024
     },
+    following: {
+        type: Array,
+        default: []
+    },
+    followers: {
+        type: Array,
+        default: []
+    },
+    groups: {
+        type: Array,
+        default: []
+    },
     date: {
         type: Date,
         default: Date.now

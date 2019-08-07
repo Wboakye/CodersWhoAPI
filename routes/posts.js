@@ -53,10 +53,11 @@ router.patch('/:postId', verify, async (req, res) => {
 })
 
 //SUBMIT NEW POST
-router.post('/', verify, async (req, res) => {
+router.post('/create', verify, async (req, res) => {
     const post = new Post({
         title: req.body.title,
-        description: req.body.description
+        description: req.body.description,
+        userId: req.user._id
     });
     try{
         const savedPost = await post.save();
