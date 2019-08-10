@@ -7,7 +7,7 @@ const User = require('../models/User');
 const  { registerValidation, loginValidation } = require('../validation');
 
 
-//CREATE NEW USER 
+//CREATE NEW USER EXPECTS: FIRSTNAME/LASTNAME/USERNAME/EMAIL/PASSWORD
 router.post('/register', async (req, res) => {
 
     //VALIDATE DATA 
@@ -48,6 +48,7 @@ router.post('/register', async (req, res) => {
     }
 });
 
+//LOGIN: EXPECTS USERNAME/PASSWORD  
 router.post('/login', async (req, res) => {
 
     //VALIDATE DATA 
