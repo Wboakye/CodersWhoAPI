@@ -1,19 +1,33 @@
 const jwt = require('jsonwebtoken');
+const User = require('../models/User');
 
-module.exports = function(req, res, next){
+
+module.exports = async function(req, res, next){
 
     //GET TOKEN
     const token = req.header('auth-token');
     if(!token){
-        res.status(401).send('Access Denied');
+        res.status(401).send({success: false, message: 'Access Denied'});
     }else{
         try{
             //COMPARE TOKEN TO SECRET
             const verified = jwt.verify(token, process.env.TOKEN_SECRET);
             req.user = verified
-            next();
+            const id = req.user._id
+            const user = await User.findOne({ _id: id });
+
+            //COMPARE TOKEN TO USERS LAST KNOWN TOKEN
+            if(await user.lastKnownJWT === token){
+                console.log('Last Known Matches')
+                next();
+            }else{
+                console.log('Token does not match database')
+                res.status(401).send({success: false, message: 'Invalid Token'});
+            }
+            
         }catch(err){
-            res.status(400).send('Invalid Token');
+            console.log("AUTH ERROR :" + err)
+            res.status(401).send({success: false, message: 'Invalid Token'});
         }
     }
 }

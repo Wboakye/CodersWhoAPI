@@ -31,6 +31,10 @@ const userSchema = new mongoose.Schema({
         min: 6,
         max: 1024
     },
+    lastKnownJWT: {
+        type: String,
+        required: true,
+    },
     following: {
         type: Array,
         default: []
