@@ -1,7 +1,10 @@
 const express = require('express');
 const app = express();
 const server = require('http').Server(app);
-const io = require('socket.io')(server);
+const io = require('socket.io')(server, {
+    pingInterval: 10000,
+    pingTimeout: 5000,
+  });
 
 
 
@@ -30,26 +33,27 @@ app.use('/api/posts', postsRoute);
 
 //MAIN ENDPOINT
 app.get('/', (req, res) => {
-    res.send('CODERS WHO...');
+    res.send('CODERS WHO...API');
 });
 
+//PRICE DATE WEB SOCKETS
 
-io.once('connection', function(socket){
-    const pricesWs = new WebSocket(pricesUrl)
-    pricesWs.onmessage = function (msg) {
-        let priceData = JSON.parse(msg.data)
-        //socket.emit('request', priceData = priceData); // emit an event to the socket when 'request' comes through
-        io.emit('broadcast', priceData);
-        console.log(socket.id)
-    }
-    
+io.on('connection', function(socket){
+    console.log('Connected to: ' + socket.id) 
 });
 
-//CRON JOB: 
+io.on('end', function (socket){
+    console.log(socket.id + ' disconnected.')
+});
 
-// cron.schedule('*/5 * * * * *', () => {
-//     
-// });
+//GETS DATA FROM API SENDS TO CLIENT
+const pricesWs = new WebSocket(pricesUrl)
+pricesWs.onmessage = function (msg) {
+    let priceData = JSON.parse(msg.data)
+    //socket.emit('request', priceData = priceData); // emit an event to the socket when 'request' comes through
+    io.emit('broadcast', priceData);
+}
+
 
 //CONNECT TO DB
 mongoose.connect(
