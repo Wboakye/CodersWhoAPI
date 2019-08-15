@@ -6,6 +6,7 @@ module.exports = async function(req, res, next){
 
     //GET TOKEN
     const token = req.header('auth-token');
+    console.log(token)
     if(!token){
         res.status(401).send({success: false, message: 'Access Denied'});
     }else{
@@ -18,7 +19,6 @@ module.exports = async function(req, res, next){
 
             //COMPARE TOKEN TO USERS LAST KNOWN TOKEN
             if(await user.lastKnownJWT === token){
-                console.log('Last Known Matches')
                 next();
             }else{
                 console.log('Token does not match database')
