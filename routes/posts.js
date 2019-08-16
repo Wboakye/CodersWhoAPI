@@ -7,7 +7,7 @@ const Post = require('../models/Post')
 
 
 //GET ALL POSTS
-router.get('/', verify, async (req, res) => {
+router.get('/', async (req, res) => {
     try{
         const posts = await Post.find();
         res.json(posts);

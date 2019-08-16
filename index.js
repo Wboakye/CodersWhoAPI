@@ -6,12 +6,11 @@ const io = require('socket.io')(server, {
     pingTimeout: 5000,
   });
 
-
+const cron = require('node-cron');
+const axios = require('axios')
 
 const WebSocket = require('ws');
 const pricesUrl = 'wss://ws.coincap.io/prices?assets=bitcoin,ethereum,litecoin,dogecoin,ripple'
-
-const cron = require('node-cron');
 
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
@@ -21,6 +20,8 @@ require('dotenv/config');
 //IMPORT ROUTES
 const authRoute = require('./routes/auth');
 const postsRoute = require('./routes/posts');
+const newsRoute = require('./routes/news');
+
 
 //MIDDLEWARE
 app.use(cors());
@@ -30,14 +31,15 @@ app.use(bodyParser.json());
 //ROUTES
 app.use('/api/user', authRoute);
 app.use('/api/posts', postsRoute);
+app.use('/api/news', newsRoute);
+
 
 //MAIN ENDPOINT
 app.get('/', (req, res) => {
     res.send('CODERS WHO...API');
 });
 
-//PRICE DATE WEB SOCKETS
-
+//PRICE DATA WEB SOCKETS
 io.on('connection', function(socket){
     console.log('Connected to: ' + socket.id) 
 });
@@ -64,3 +66,4 @@ mongoose.connect(
 
 app.listen('3005', () => console.log('Listening on port 3005.'))
 server.listen('80', () => console.log('Listening on port 80.'));
+
